@@ -32,7 +32,8 @@ const queueMap = new Map();
 
 async function updateQueues() {
   const isBullMQ = () => config.BULL_VERSION === 'BULLMQ';
-  const keys = await client.keys(`${config.BULL_PREFIX}:*`);
+  const bullPrefix = config.BULL_PREFIX;
+  const keys = await client.keys(`${bullPrefix}:*`);
   const uniqKeys = new Set(keys.map((key) => key.replace(/^.+?:(.+?):.+?$/, '$1')));
   const actualQueues = Array.from(uniqKeys).sort();
 
@@ -40,7 +41,19 @@ async function updateQueues() {
     if (!queueMap.has(queueName)) {
       queueMap.set(
         queueName,
-        isBullMQ() ? new bullmq.Queue(queueName, { connection: redisConfig.redis }) : new Queue(queueName, redisConfig),
+        isBullMQ() ? new bullmq.Queue(
+          queueName,
+          {
+            connection: redisConfig.redis,
+            prefix: bullPrefix,
+          }
+        ) : new Queue(
+          queueName,
+          {
+            ...redisConfig,
+            prefix: bullPrefix,
+          },
+        ),
       );
     }
   }
