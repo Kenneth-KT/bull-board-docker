@@ -1,0 +1,55 @@
+{
+  "name": "bull-board-docker",
+  "version": "4.3.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node .",
+    "pretest": "npm run test:stack:up",
+    "test": "docker-compose -f docker-compose.test.yml run --rm sut",
+    "posttest": "npm run test:stack:down",
+    "test:stack:up": "docker-compose -f docker-compose.test.yml up -d --build bull-board",
+    "test:stack:down": "docker-compose -f docker-compose.test.yml down --rmi local",
+    "prepare": "husky install"
+  },
+  "repository": "https://github.com/Diluka/bull-board-docker",
+  "dependencies": {
+    "@bull-board/api": "^4.3.1",
+    "@bull-board/express": "^4.3.1",
+    "bull": "^4.9.0",
+    "bullmq": "^2.1.0",
+    "connect-ensure-login": "^0.1.1",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "ioredis": "^5.2.3",
+    "morgan": "^1.10.0",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.24.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 140,
+    "trailingComma": "all"
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:prettier/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2021
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix"
+  }
+}
